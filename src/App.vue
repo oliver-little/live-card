@@ -8,6 +8,7 @@ export default {
       timerEnabled: true,
       timerCount: 1,
       timerGap: 1000,
+      morphSpeed: 500,
       kanjiValues: ["", "千", "千と", "千と千", "千と千尋", "千と千尋の", "千と千尋の神", "千と千尋の神隠", "千と千尋の神隠し"],
       kanjiValuesLoop: ["千と千尋の神隠し", "千と千尋の神隠し.", "千と千尋の神隠し..", "千と千尋の神隠し..."],
       kanjiValuesIndex: 0,
@@ -34,6 +35,7 @@ export default {
     start() {
       this.started = true;
       this.timerGap = 250;
+      this.morphSpeed = 125;
       this.timerEnabled = true;
       this.timerCount++;
     },
@@ -49,6 +51,7 @@ export default {
       // Kanji loop start
       else if (this.kanjiValues.length == this.kanjiValuesIndex + 1) {
         this.timerGap = 1000;
+        this.morphSpeed = 250;
         this.inKanjiLoop = true;
         this.kanjiValuesIndex = 0;
       }
@@ -81,7 +84,7 @@ export default {
 <template>
   <main>
     <button @click="start()">Start</button>
-    <TextMorph :inputText="displayValue"/>
+    <TextMorph :morphSpeed="morphSpeed / 1000" :inputText="displayValue"/>
   </main>
 </template>
 

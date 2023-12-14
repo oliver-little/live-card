@@ -5,7 +5,11 @@ const cooldownTime = 0.25;
 export default {
     name: "TextMorph",
     props: {
-        inputText: String
+        inputText: String,
+        morphSpeed: {
+            type: Number,
+            default: morphTime
+        }
     },
     data() {
         return {
@@ -30,7 +34,7 @@ export default {
             this.morph -= this.cooldown;
             this.cooldown = 0;
 
-            let fraction = this.morph / morphTime;
+            let fraction = this.morph / this.morphSpeed;
 
             if (fraction > 1) {
                 this.cooldown = cooldownTime;
