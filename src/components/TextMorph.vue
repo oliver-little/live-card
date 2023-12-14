@@ -1,5 +1,5 @@
 <script>
-const morphTime = 2;
+const morphTime = 0.125;
 const cooldownTime = 0.25;
 
 export default {
@@ -20,7 +20,8 @@ export default {
     },
     watch: {
         inputText(newVal, oldVal) {
-            console.log("NEW TEXT");
+            this.time = new Date();
+            this.cooldown = 0;
             this.animate();
         }
     },
@@ -62,7 +63,7 @@ export default {
 
             this.cooldown -= dt;
 
-            if (this.cooldown <= 0) {
+            if (this.cooldown <= 0.05) {
                 requestAnimationFrame(this.animate);
                 this.doMorph();
             }
@@ -96,16 +97,12 @@ export default {
 </template>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Raleway:900&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Afacad");
 
 .morphTextContainer {
-    position: absolute;
-    margin: auto;
+    display: flex;
+    justify-content: center;
     width: 100vw;
-    height: 80pt;
-    top: 0;
-    bottom: 0;
-
     filter: url(#threshold) blur(0.6px);
 }
 
@@ -113,12 +110,13 @@ export default {
     position: absolute;
     display: inline-block;
 
-    font-family: "Raleway", sans-serif;
+    font-family: "Afacad", sans-serif;
     font-size: 80pt;
 
     text-align: center;
 
     user-select: none;
+    color: #fff;
 }
 
 </style>

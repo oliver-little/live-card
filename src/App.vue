@@ -5,8 +5,74 @@ export default {
   components: {TextMorph},
   data() {
     return {
-      values: ["abc", "def", "ghi"],
-      valuesIndex: 0,
+      timerEnabled: true,
+      timerCount: 1,
+      timerGap: 1000,
+      kanjiValues: ["", "千", "千と", "千と千", "千と千尋", "千と千尋の", "千と千尋の神", "千と千尋の神隠", "千と千尋の神隠し"],
+      kanjiValuesLoop: ["千と千尋の神隠し", "千と千尋の神隠し.", "千と千尋の神隠し..", "千と千尋の神隠し..."],
+      kanjiValuesIndex: 0,
+      started: false,
+      inKanjiLoop: false,
+      fullStop: false,
+      lastTimeout: null,
+    }
+  },
+  computed: {
+    displayValue() {
+      if (!this.started) {
+        return this.fullStop ? "." : "";
+      }
+      if (this.inKanjiLoop) {
+        return this.kanjiValuesLoop[this.kanjiValuesIndex];
+      }
+      else {
+        return this.kanjiValues[this.kanjiValuesIndex];
+      }
+    }
+  },
+  methods: {
+    start() {
+      this.started = true;
+      this.timerGap = 250;
+      this.timerEnabled = true;
+      this.timerCount++;
+    },
+    nextState() {
+      // Start state
+      if (!this.started) {
+        this.fullStop = !this.fullStop;
+      }
+      // Kanji loop state - end of loop
+      else if (this.inKanjiLoop && this.kanjiValuesLoop.length == this.kanjiValuesIndex + 1) {
+        this.kanjiValuesIndex = 0;
+      }
+      // Kanji loop start
+      else if (this.kanjiValues.length == this.kanjiValuesIndex + 1) {
+        this.timerGap = 1000;
+        this.inKanjiLoop = true;
+        this.kanjiValuesIndex = 0;
+      }
+      // Otherwise increment
+      else {
+        this.kanjiValuesIndex++;
+      }
+    }
+  },
+  watch: {
+    timerCount: {
+        handler(value) {
+          if (value > 0 && this.timerEnabled) {
+            if (this.lastTimeout) {
+              clearTimeout(this.lastTimeout);
+            }
+            this.lastTimeout = setTimeout(() => {
+              this.timerCount++;
+            }, this.timerGap);
+          }
+
+          this.nextState();
+        },
+        immediate: true
     }
   }
 }
@@ -14,8 +80,8 @@ export default {
 
 <template>
   <main>
-    <button @click="valuesIndex = valuesIndex + 1">Next</button>
-    <TextMorph :inputText="values[valuesIndex]"/>
+    <button @click="start()">Start</button>
+    <TextMorph :inputText="displayValue"/>
   </main>
 </template>
 
